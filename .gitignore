@@ -1,0 +1,32 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Database
+*.db
+*.sqlite3
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+
+# IDEs and Editors
+.vscode/
+.idea/
+
+# Local env files
+.env
+.env.*
+
+# Media/Uploads (사용자 업로드 파일은 보통 제외합니다)
+media/profile_pics/*
+!media/profile_pics/default.jpg  # 기본 이미지는 유지하고 싶을 경우
