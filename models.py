@@ -3,6 +3,7 @@ from datetime import UTC, datetime
 from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database import Base
+from config import settings
 
 
 class User(Base):
@@ -26,6 +27,11 @@ class User(Base):
         cascade="all, delete-orphan",
     )
 
+    reset_tokens: Mapped[list[PasswordResetToken]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
     # property 데코레이터
     # 클래스 내부 함수를 쓰려면 user.image_path()와 같이 괄호를 붙여야 한다.
     # 하지만 property 데코레이터를 사용하면 user.image_path라고만 써도 실행이 된다.
@@ -33,7 +39,7 @@ class User(Base):
     @property
     def image_path(self) -> str:
         if self.image_file:
-            return f"/media/profile_pics/{self.image_file}"
+            return f"https://{settings.s3_bucket_name}.s3.{settings.s3_region}.amazonaws.com/profile_pics/{self.image_file}"
         return "/static/profile_pics/default.jpg"
 
 
@@ -55,6 +61,25 @@ class Post(Base):
         # lambda를 사용해야 데이터가 생성될 때마다 순간의 시간으로 새로 계산해서 넣어준다.
         default=lambda: datetime.now(UTC),
     )
+    likes: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
 
     # relationship(back_populates="posts": 반대로 Post에서 User와 연결하기
     author: Mapped[User] = relationship(back_populates="posts")
+
+
+class PasswordResetToken(Base):
+    __tablename__ = "password_reset_tokens"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+    )
+
+    user: Mapped[User] = relationship(back_populates="reset_tokens")

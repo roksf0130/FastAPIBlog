@@ -1,14 +1,19 @@
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from config import settings
 
 # aiosqlite : 비동기 환경에서 SQLite 를 사용하기 위한 비동기용 드라이버
-SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///./blog.db"
+# SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///./blog.db"
 
 # 비동기 방식으로 DB 를 이용하므로 create_engine 이 아닌 create_async_engine 을 사용
-engine = create_async_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False},
-)
+# engine = create_async_engine(
+#     SQLALCHEMY_DATABASE_URL,
+#     connect_args={"check_same_thread": False},
+# )
+
+
+# PostgreSQL
+engine = create_async_engine(settings.database_url)
 
 """
 비동기 환경에서 DB와 통신하기 위해 async_sessionmaker로 비동기 세션 팩토리를 생성

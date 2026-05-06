@@ -27,6 +27,28 @@ Thumbs.db
 .env
 .env.*
 
-# Media/Uploads (사용자 업로드 파일은 보통 제외합니다)
+# Media/Uploads
 media/profile_pics/*
 !media/profile_pics/default.jpg  # 기본 이미지는 유지하고 싶을 경우
+
+# Logs
+*.log
+
+# Testing / Coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Build / Distribution
+build/
+dist/
+*.egg-info/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Local History (IDE 관련)
+.history/
